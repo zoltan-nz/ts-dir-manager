@@ -16,20 +16,21 @@
   "author": "Zoltan",
   "license": "MIT",
   "devDependencies": {
-    "@types/chai": "^3.5.2",
+    "@types/chai": "^4.0.0",
     "@types/debug": "0.0.29",
-    "@types/lodash": "^4.14.64",
+    "@types/lodash": "^4.14.65",
     "@types/mocha": "^2.2.41",
-    "@types/node": "^7.0.22",
-    "chai": "^4.0.0",
+    "@types/node": "^7.0.27",
+    "chai": "^4.0.1",
     "mocha": "^3.4.2",
     "ts-node": "^3.0.4",
-    "tslint": "^5.3.2",
-    "typescript": "^2.3.3"
+    "tslint": "^5.4.2",
+    "typescript": "^2.3.4"
   },
   "dependencies": {
     "async-file": "^2.0.2",
     "debug": "^2.6.8",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "util.promisify": "^1.0.0"
   }
 }
