@@ -10,6 +10,10 @@
     "clean": "rm -rf ./dist",
     "lint": "tslint --project ./tsconfig.json --fix --type-check",
     "build": "tsc",
+    "test": "mocha",
+    "test:watch": "chokidar ./src/**/*.ts ./test/**/*.ts -c mocha --initial",
+    "lint:watch": "chokidar ./src/**/*.ts ./test/**/*.ts -c 'npm run lint' --initial",
+    "test:watch:debug": "node --inspect npm run test:watch",
     "dev:watch": "DEBUG='dir-manager' nodemon -w ./ -x time node ./dist/dir-manager.js"
   },
   "keywords": [],
@@ -20,8 +24,10 @@
     "@types/debug": "0.0.29",
     "@types/lodash": "^4.14.65",
     "@types/mocha": "^2.2.41",
+    "@types/mz": "0.0.31",
     "@types/node": "^7.0.27",
     "chai": "^4.0.1",
+    "chokidar": "^1.7.0",
     "mocha": "^3.4.2",
     "ts-node": "^3.0.4",
     "tslint": "^5.4.2",
@@ -31,6 +37,6 @@
     "async-file": "^2.0.2",
     "debug": "^2.6.8",
     "lodash": "^4.17.4",
-    "util.promisify": "^1.0.0"
+    "mz": "^2.6.0"
   }
 }
