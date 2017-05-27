@@ -1,8 +1,13 @@
 import * as assert from 'assert';
+import * as chalk from 'chalk';
+import { ENOENT } from 'constants';
 import * as _ from 'lodash';
 import * as fs from 'mz/fs';
 import * as path from 'path';
 import { Tree } from './tree';
+import Debug = require('debug');
+
+const debug = Debug('dir-manager');
 
 export enum FileType {
   File,
@@ -17,7 +22,7 @@ export interface IFile {
   type?: FileType;
   content?: string;
   children: Tree[];
-  stat: fs.Stats;
+  stat: fs.Stats | false;
 }
 
 export default class File implements IFile {
@@ -28,7 +33,7 @@ export default class File implements IFile {
   public type?: FileType;
   public content?: string;
   public children: Tree[];
-  public stat: fs.Stats;
+  public stat: fs.Stats | false;
 
   constructor(absolutePath: string) {
     assert.ok(!_.isEmpty(absolutePath), 'TreeMaker expect a non empty string.');
@@ -36,8 +41,14 @@ export default class File implements IFile {
     try {
       this.stat = fs.statSync(absolutePath);
     } catch (e) {
-      console.error(e.message); // tslint:disable-line no-console
-      throw (e);
+      debug(chalk.red(e.message));
+      if (e.code === 'ELOOP')
+        debug(chalk.red('There is an infinite loop symlink in your directory ' +
+          'structure, please fix it!'));
+      if (e.code === 'ENOENT')
+        debug(chalk.red('This symlink is probably broken: '), absolutePath);
+
+      this.stat = false;
     }
 
     this.children = [];

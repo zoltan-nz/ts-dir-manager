@@ -11,7 +11,8 @@ export interface ITree {
 export class Tree  {
 
   private static getChildren(parentFile: IFile): Tree[] {
-    if (!parentFile.stat.isDirectory()) return [];
+    if (!parentFile.stat) return [];
+    if (parentFile.stat.isSymbolicLink() || !parentFile.stat.isDirectory()) return [];
 
     let childrenFileNames: string[] = fs.readdirSync(parentFile.path);
     childrenFileNames = childrenFileNames.map(name => path.resolve(parentFile.path, name));
@@ -25,7 +26,10 @@ export class Tree  {
     assert.ok(!_.isEmpty(entryPath), 'TreeMaker expect a non empty string.');
 
     const file: IFile = new File(entryPath);
-    file.children = Tree.getChildren(file);
+    file.children = file.stat && (file.stat.isSymbolicLink() || file.stat.isFile())
+      ? []
+      : Tree.getChildren(file);
+
     this.entry = file;
   }
 

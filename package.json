@@ -15,7 +15,7 @@
     "watch:test": "chokidar ./src/**/*.ts ./test/**/*.ts --initial --silent -c mocha",
     "debug:test": "node --inspect-brk $(which mocha)",
     "watch:lint": "chokidar ./src/**/*.ts ./test/**/*.ts --initial --silent -c 'npm -s run lint'",
-    "watch:run": "DEBUG='dir-manager' nodemon -w ./ -x time node ./dist/dir-manager.js ./test/fixtures",
+    "watch:run": "DEBUG='dir-manager' nodemon -w ./ -x time node ./dist/dir-manager.js ./test/fixtures/fixture-directory",
     "dev": "concurrently --raw 'npm run watch:build' 'npm run watch:test' 'npm run watch:lint' 'npm run watch:run'",
     "start": "npm run dev"
   },

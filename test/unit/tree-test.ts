@@ -15,7 +15,6 @@ describe('Tree', () => {
     expect(treeMaker, 'should create an instance').is.instanceof(Tree);
   });
 
-
   it('entry - should contain the tree object', () => {
     const treeMaker = new Tree(FIXTURE_DIRECTORY);
 
@@ -40,12 +39,31 @@ describe('Tree', () => {
             {
               'dir-1-dir-2': [
                 {
+                  'false-symlink': ''
+                },
+                {
                   'file-2.txt': ''
+                },
+                {
+                  symlink: ''
                 }
               ]
             },
             {
               'file-3.txt': ''
+            },
+            {
+              symdir: [
+                {
+                  'false-symlink': ''
+                },
+                {
+                  'file-2.txt': ''
+                },
+                {
+                  symlink: ''
+                }
+              ]
             }
           ]
         },
