@@ -24,7 +24,7 @@ describe('Tree', () => {
   it('entry.children - should contain the children objects', () => {
     const treeMaker = new Tree(FIXTURE_DIRECTORY);
     const dir1Tree = new Tree(`${FIXTURE_DIRECTORY}/dir-1`);
-    const file1Tree = new Tree(`${FIXTURE_DIRECTORY}/file-1.txt`);
+    const file1Tree = new Tree(`${FIXTURE_FILE}`);
 
     expect(treeMaker.entry.children).length(2);
     expect(treeMaker.entry.children).deep.equal([dir1Tree, file1Tree]);

@@ -4,6 +4,7 @@ import * as process from 'process';
 import { Tree } from './tree';
 import Debug = require('debug');
 import * as chalk from 'chalk';
+import * as _ from 'lodash';
 
 const debug = Debug('dir-manager');
 
@@ -24,9 +25,16 @@ debug('process.pwd', process.cwd());
     debug('resolvedDirectory', resolvedDirectory);
 
     const treeMaker = new Tree(resolvedDirectory);
-    const tree = treeMaker.getTree();
 
-    console.log(JSON.stringify(tree, null, 2)); // tslint:disable-line no-console
+    debug('treeMaker ready');
+
+    const tree = treeMaker.getTree();
+    debug ('tree ready');
+
+    const treeSize = _.keys(tree).length;
+    debug('size of the tree', treeSize);
+
+    // console.log(JSON.stringify(tree, null, 2)); // tslint:disable-line no-console
   } catch (e) {
     console.error(chalk.red(e.message)); // tslint:disable-line no-console
   }

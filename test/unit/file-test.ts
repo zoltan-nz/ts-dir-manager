@@ -25,7 +25,7 @@ describe('File', () => {
   it('#new - should return with stat false when file can not be read', () => {
     const file = new File('not-existing.file');
 
-    expect(() => file.stat, 'not existing file should change stat to false')
+    expect(file.stat, 'not existing file should change stat to false')
       .to.be.false;
   });
 
