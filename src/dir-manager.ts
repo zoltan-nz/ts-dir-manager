@@ -12,7 +12,7 @@ debug('ARGV:', process.argv);
 debug('__dirname:', __dirname);
 debug('process.pwd', process.cwd());
 
-(() => {
+(async () => {
   try {
 
     const mainDirectory = process.argv[2];
@@ -28,7 +28,7 @@ debug('process.pwd', process.cwd());
 
     debug('treeMaker ready');
 
-    const tree = treeMaker.getTree();
+    const tree = await treeMaker.getTree();
     debug ('tree ready');
 
     const treeSize = _.keys(tree).length;

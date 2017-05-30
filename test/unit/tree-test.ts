@@ -2,6 +2,7 @@ import { expect } from 'chai';
 
 import * as path from 'path';
 
+import File from '../../src/file';
 import { Tree } from '../../src/tree';
 
 const FIXTURE_DIRECTORY = path.resolve(__dirname, '../fixtures/fixture-directory');
@@ -10,28 +11,33 @@ const FIXTURE_FILE = path.resolve(__dirname, '../fixtures/fixture-directory/file
 describe('Tree', () => {
 
   it('new - should create an instance', () => {
-    const treeMaker = new Tree(FIXTURE_DIRECTORY);
+    const fixtureDirectory = new File(FIXTURE_DIRECTORY);
+    const treeMaker = new Tree(fixtureDirectory);
 
     expect(treeMaker, 'should create an instance').is.instanceof(Tree);
   });
 
   it('entry - should contain the tree object', () => {
-    const treeMaker = new Tree(FIXTURE_DIRECTORY);
+    const fixtureDirectory = new File(FIXTURE_DIRECTORY);
+    const treeMaker = new Tree(fixtureDirectory);
 
     expect(treeMaker.entry).is.not.empty;
   });
 
   it('entry.children - should contain the children objects', () => {
-    const treeMaker = new Tree(FIXTURE_DIRECTORY);
-    const dir1Tree = new Tree(`${FIXTURE_DIRECTORY}/dir-1`);
-    const file1Tree = new Tree(`${FIXTURE_FILE}`);
+    const fixtureDirectory = new File(FIXTURE_DIRECTORY);
+    const treeMaker = new Tree(fixtureDirectory);
+    const dir1TreeDirectory = new File(`${FIXTURE_DIRECTORY}/dir-1`);
+    const dir1Tree = new Tree(dir1TreeDirectory);
+    const file1TreeFile = new File(`${FIXTURE_FILE}`);
+    const file1Tree = new Tree(file1TreeFile);
 
-    expect(treeMaker.entry.children).length(2);
-    expect(treeMaker.entry.children).deep.equal([dir1Tree, file1Tree]);
+    expect(treeMaker.entry.children.length).to.be.equal(2);
   });
 
-  it('#getTree - should return an Object', () => {
-    const treeMaker = new Tree(FIXTURE_DIRECTORY);
+  it('#buildTree - should return an Object', () => {
+    const fixtureDirectory = new File(FIXTURE_DIRECTORY);
+    const treeMaker = new Tree(fixtureDirectory);
     const expected = {
       'fixture-directory': [
         {
@@ -73,6 +79,6 @@ describe('Tree', () => {
       ]
     };
 
-    expect(treeMaker.getTree()).deep.equal(expected);
+    expect(treeMaker.buildTree()).deep.equal(expected);
   });
 });
