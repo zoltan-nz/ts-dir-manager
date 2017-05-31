@@ -100,14 +100,17 @@ export default class File implements IFile {
   }
 
   private _updateChildren() {
-    if (this.stat && (!this.isValid || this.stat.isSymbolicLink() || !this.stat.isDirectory()))
-      return this.children = [];
+    if (!this._hasChildren()) return this._children = [];
 
     const childrenFileNames: string[] = fs.readdirSync(this.path);
     const childrenRelativePaths: string[] = childrenFileNames.map(name => path.resolve(this.path, name));
 
-    this.children = childrenRelativePaths.map(childRelativePath => new File(childRelativePath));
+    this._children = childrenRelativePaths.map(childRelativePath => new File(childRelativePath));
     this._isChildrenUpdated = true;
-    return this.children;
+    return this._children;
+  }
+
+  private _hasChildren() {
+    return !!(this.stat && this.stat.isDirectory());
   }
 }

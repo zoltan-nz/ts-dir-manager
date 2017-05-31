@@ -1,6 +1,7 @@
 import * as assert from 'assert';
 import * as path from 'path';
 import * as process from 'process';
+import File from './file';
 import { Tree } from './tree';
 import Debug = require('debug');
 import * as chalk from 'chalk';
@@ -24,17 +25,18 @@ debug('process.pwd', process.cwd());
 
     debug('resolvedDirectory', resolvedDirectory);
 
-    const treeMaker = new Tree(resolvedDirectory);
+    const file = new File(resolvedDirectory);
+    const treeMaker = new Tree(file);
 
     debug('treeMaker ready');
 
-    const tree = await treeMaker.getTree();
+    const tree = await treeMaker.buildTree();
     debug ('tree ready');
 
     const treeSize = _.keys(tree).length;
     debug('size of the tree', treeSize);
 
-    // console.log(JSON.stringify(tree, null, 2)); // tslint:disable-line no-console
+    console.log(JSON.stringify(tree, null, 2)); // tslint:disable-line no-console
   } catch (e) {
     console.error(chalk.red(e.message)); // tslint:disable-line no-console
   }
