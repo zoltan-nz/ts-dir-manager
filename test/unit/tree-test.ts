@@ -24,7 +24,7 @@ describe('Tree', () => {
     expect(treeMaker.entry).is.not.empty;
   });
 
-  it('entry.children - should contain the children objects', () => {
+  it('entry.getChildren() - should return the children objects', async () => {
     const fixtureDirectory = new File(FIXTURE_DIRECTORY);
     const treeMaker = new Tree(fixtureDirectory);
     const dir1TreeDirectory = new File(`${FIXTURE_DIRECTORY}/dir-1`);
@@ -32,10 +32,12 @@ describe('Tree', () => {
     const file1TreeFile = new File(`${FIXTURE_FILE}`);
     const file1Tree = new Tree(file1TreeFile);
 
-    expect(treeMaker.entry.children.length).to.be.equal(2);
+    const children = await treeMaker.entry.getChildren();
+
+    expect(children.length).to.be.equal(2);
   });
 
-  it('#buildTree - should return an Object', () => {
+  it('#buildTree - should return an Object', async () => {
     const fixtureDirectory = new File(FIXTURE_DIRECTORY);
     const treeMaker = new Tree(fixtureDirectory);
     const expected = {
@@ -79,6 +81,7 @@ describe('Tree', () => {
       ]
     };
 
-    expect(treeMaker.buildTree()).deep.equal(expected);
+    const tree = await treeMaker.buildTree();
+    expect(tree).deep.equal(expected);
   });
 });

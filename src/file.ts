@@ -5,6 +5,7 @@ import * as _ from 'lodash';
 import * as fs from 'mz/fs';
 import * as path from 'path';
 import Debug = require('debug');
+import { Stats } from 'fs';
 
 const debug = Debug('dir-manager');
 
@@ -20,12 +21,12 @@ export interface IFile {
   ext?: string;
   type?: FileType;
   content?: string;
-  children: IFile[];
-  stat: fs.Stats | false;
-  size(): number;
+  stat: Promise<fs.Stats | false>;
+  size(): Promise<number>;
 }
 
 export default class File implements IFile {
+
   public path: string;
   public name: string;
   public ext?: string;
@@ -33,8 +34,8 @@ export default class File implements IFile {
   public content?: string;
   public isValid: boolean;
 
-  private _stat: fs.Stats | false;
-  private _children: IFile[];
+  private _stat: Promise<fs.Stats | false>;
+  private _children: File[];
 
   private _isStatUpdated: boolean;
   private _isChildrenUpdated: boolean;
@@ -45,30 +46,28 @@ export default class File implements IFile {
     this._isChildrenUpdated = false;
     this._isStatUpdated = false;
     this.isValid = false;
-    this.children = [];
     this.name = path.basename(absolutePath);
     this.path = absolutePath;
 
     return this;
   }
 
-  public get stat() {
+  public get stat(): Promise<fs.Stats | false> {
     if (this._isStatUpdated) return this._stat;
-    this._updateStat();
-    return this._stat;
+    return this._updateStat();
   }
 
-  public set stat(value: fs.Stats | false) {
+  public set stat(value: Promise<fs.Stats | false>) {
     this._stat = value;
   }
 
-  public get children() {
+  public async getChildren(): Promise<File[]> {
     if (this._isChildrenUpdated) return this._children;
-    this._updateChildren();
+    await this._updateChildren();
     return this._children;
   }
 
-  public set children(value: IFile[]) {
+  public setChildren(value: File[]) {
     this._children = value;
   }
 
@@ -76,13 +75,14 @@ export default class File implements IFile {
     return this.name;
   }
 
-  public size() {
-    return this.children.length;
+  public async size(): Promise<number> {
+    const children = await this.getChildren();
+    return children.length;
   }
 
-  private _updateStat() {
+  private async _updateStat(): Promise<fs.Stats | false> {
     try {
-      this._stat = fs.statSync(this.path);
+      this._stat = fs.stat(this.path);
       this._isStatUpdated = true;
       this.isValid = true;
     } catch (e) {
@@ -93,24 +93,26 @@ export default class File implements IFile {
       if (e.code === 'ENOENT')
         debug(chalk.red('This symlink is probably broken: '), this.path);
       this._isStatUpdated = true;
-      this._stat = false;
+      this._stat = Promise.reject(false);
       this.isValid = false;
     }
     return this._stat;
   }
 
-  private _updateChildren() {
-    if (!this._hasChildren()) return this._children = [];
+  private async _updateChildren() {
+    if (await !this._hasChildren()) return this.setChildren([]);
 
-    const childrenFileNames: string[] = fs.readdirSync(this.path);
+    const childrenFileNames: string[] = await fs.readdir(this.path);
     const childrenRelativePaths: string[] = childrenFileNames.map(name => path.resolve(this.path, name));
 
-    this._children = childrenRelativePaths.map(childRelativePath => new File(childRelativePath));
+    const childrenMap = childrenRelativePaths.map(childRelativePath => new File(childRelativePath));
+    this.setChildren(childrenMap);
     this._isChildrenUpdated = true;
-    return this._children;
+    return childrenMap;
   }
 
-  private _hasChildren() {
-    return !!(this.stat && this.stat.isDirectory());
+  private async _hasChildren() {
+    const stat = await this.stat;
+    return !!(stat && stat.isDirectory());
   }
 }

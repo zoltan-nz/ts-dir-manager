@@ -39,7 +39,6 @@ describe('File', () => {
       name:     'fixture-directory',
       path:     FIXTURE_DIRECTORY,
       isValid:  false,
-      _children: [],
       _isChildrenUpdated: false,
       _isStatUpdated: false
     };
@@ -47,10 +46,10 @@ describe('File', () => {
     expect(file).is.deep.equal(iFile);
   });
 
-  it('#size - shows the number of sub elements (childrens)', () => {
+  it('#size - shows the number of sub elements (childrens)', async () => {
     const file = new File(FIXTURE_DIRECTORY);
-    file.size();
+    const size = await file.size();
 
-    expect(file.size(), 'show the number of children').to.be.equal(2);
+    expect(size, 'show the number of children').to.be.equal(2);
   });
 });

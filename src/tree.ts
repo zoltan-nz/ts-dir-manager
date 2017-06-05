@@ -1,24 +1,30 @@
-import * as assert from 'assert';
 import * as _ from 'lodash';
-import * as fs from 'mz/fs';
-import * as path from 'path';
-import File, { IFile } from './file';
+import File from './file';
 
 export interface ITree {
-  [ index: string ]: ITree[] | string;
+  [ index: string ]: Array<Promise<ITree>> | string;
 }
 
-export class Tree  {
+export class Tree {
 
-  constructor(public entry: IFile) {}
+  constructor(public entry: File) {
+  }
 
-  public buildTree(): ITree {
+  public async buildTree(): Promise<ITree> {
     const tree: ITree = {};
     const name: string = this.entry.name;
 
-    const children: IFile[] = this.entry.children;
+    const children: File[] = await this.entry.getChildren();
 
-    tree[name] = _.isEmpty(children) ? '' : children.map(child => new Tree(child).buildTree());
+    if (_.isEmpty(children)) {
+      tree[name] = '';
+    } else {
+      tree[name] = children.map(async child => {
+        const childTree = new Tree(child);
+        const childBuiltTree = await childTree.buildTree();
+        return childBuiltTree;
+      });
+    }
     return tree;
   }
 }

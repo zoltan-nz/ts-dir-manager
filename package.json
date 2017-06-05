@@ -29,7 +29,7 @@
     "@types/lodash": "^4.14.66",
     "@types/mocha": "^2.2.41",
     "@types/mz": "0.0.31",
-    "@types/node": "^7.0.31",
+    "@types/node": "^7.0.32",
     "chai": "^4.0.2",
     "chokidar": "^1.7.0",
     "concurrently": "^3.4.0",
