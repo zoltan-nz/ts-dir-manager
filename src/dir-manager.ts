@@ -1,10 +1,9 @@
 import * as assert from 'assert';
 import * as path from 'path';
 import * as process from 'process';
-import { buildTree } from './tree';
+import { buildTreeSync } from './tree';
 import Debug = require('debug');
 import * as chalk from 'chalk';
-import * as _ from 'lodash';
 
 const debug = Debug('dir-manager');
 
@@ -12,7 +11,7 @@ debug('ARGV:', process.argv);
 debug('__dirname:', __dirname);
 debug('process.pwd', process.cwd());
 
-(async () => {
+(() => {
   try {
 
     const mainDirectory = process.argv[2];
@@ -24,7 +23,7 @@ debug('process.pwd', process.cwd());
 
     debug('resolvedDirectory', resolvedDirectory);
 
-    const tree = await buildTree(resolvedDirectory);
+    const tree = buildTreeSync(resolvedDirectory);
 
     console.log(JSON.stringify(tree, null, 2)); // tslint:disable-line no-console
   } catch (e) {

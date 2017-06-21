@@ -10,35 +10,35 @@ export interface ITree {
   [ index: string ]: ITree[] | string;
 }
 
-export async function buildTree(absolutePath: string): Promise<ITree> {
+export function buildTreeSync(absolutePath: string): ITree {
 
   const tree: ITree = {};
 
   const name = getName(absolutePath);
-  const children: string[] = await getChildren(absolutePath);
+  const children: string[] = getChildrenSync(absolutePath);
 
   if (_.isEmpty(children)) {
     tree[name] = '';
   } else {
-    const branch: Array<Promise<ITree>> = children.map(child => buildTree(child));
-    tree[name] = await Promise.all(branch);
+    const branch: ITree[] = children.map(child => buildTreeSync(child));
+    tree[name] = branch;
   }
   return tree;
 }
 
-export function getName(absoluthPath: string) {
-  return path.basename(absoluthPath);
+export function getName(absolutePath: string) {
+  return path.basename(absolutePath);
 }
 
-export async function getChildren(absolutePath: string): Promise<string[]> {
+export function getChildrenSync(absolutePath: string): string[] {
 
-  const stat = await getStats(absolutePath);
+  const stat = getStatsSync(absolutePath);
 
   let childrenFileNames: string[];
   if (!stat || !stat.isDirectory()) return [];
 
   try {
-    childrenFileNames = await fs.readdir(absolutePath);
+    childrenFileNames = fs.readdirSync(absolutePath);
   } catch (e) {
     debug(chalk.red('Cannot read directory'), e.code, absolutePath);
     childrenFileNames = [];
@@ -47,10 +47,10 @@ export async function getChildren(absolutePath: string): Promise<string[]> {
   return childrenFileNames.map(name => path.resolve(absolutePath, name));
 }
 
-export async function getStats(filePath: string): Promise<fs.Stats | false> {
+export function getStatsSync(filePath: string): fs.Stats | false {
   let stat: fs.Stats | false;
   try {
-    stat = await fs.stat(filePath);
+    stat = fs.statSync(filePath);
   } catch (e) {
     debug(chalk.red(e.message));
     if (e.code === 'ELOOP')
@@ -58,7 +58,7 @@ export async function getStats(filePath: string): Promise<fs.Stats | false> {
         'structure, please fix it!'));
     if (e.code === 'ENOENT')
       debug(chalk.red('This symlink is probably broken: '), filePath);
-    stat = await false;
+    stat = false;
   }
   return stat;
 }
