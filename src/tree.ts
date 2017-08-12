@@ -1,64 +1,88 @@
-import * as chalk from 'chalk';
+import { chalk } from 'chalk';
 import { ENOENT } from 'constants';
+import * as Debug from 'debug';
+import * as klawSync from 'klaw-sync';
 import * as _ from 'lodash';
-import * as fs from 'mz/fs';
+import { fs } from 'mz';
 import * as path from 'path';
-import Debug = require('debug');
+
 const debug = Debug('dir-manager');
 
+export enum FileType {
+  File      = 'file',
+  Directory = 'directory'
+}
+
 export interface ITree {
-  [ index: string ]: ITree[] | string;
+  name: string;
+  type: FileType;
+  children?: ITree;
 }
 
-export function buildTreeSync(absolutePath: string): ITree {
+export class Tree {
 
-  const tree: ITree = {};
-
-  const name = getName(absolutePath);
-  const children: string[] = getChildrenSync(absolutePath);
-
-  if (_.isEmpty(children)) {
-    tree[name] = '';
-  } else {
-    const branch: ITree[] = children.map(child => buildTreeSync(child));
-    tree[name] = branch;
-  }
-  return tree;
-}
-
-export function getName(absolutePath: string) {
-  return path.basename(absolutePath);
-}
-
-export function getChildrenSync(absolutePath: string): string[] {
-
-  const stat = getStatsSync(absolutePath);
-
-  let childrenFileNames: string[];
-  if (!stat || !stat.isDirectory()) return [];
-
-  try {
-    childrenFileNames = fs.readdirSync(absolutePath);
-  } catch (e) {
-    debug(chalk.red('Cannot read directory'), e.code, absolutePath);
-    childrenFileNames = [];
+  constructor(public absolutePath: string) {
   }
 
-  return childrenFileNames.map(name => path.resolve(absolutePath, name));
-}
-
-export function getStatsSync(filePath: string): fs.Stats | false {
-  let stat: fs.Stats | false;
-  try {
-    stat = fs.statSync(filePath);
-  } catch (e) {
-    debug(chalk.red(e.message));
-    if (e.code === 'ELOOP')
-      debug(chalk.red('There is an infinite loop symlink in your directory ' +
-        'structure, please fix it!'));
-    if (e.code === 'ENOENT')
-      debug(chalk.red('This symlink is probably broken: '), filePath);
-    stat = false;
+  public get jsonTree(): string {
+    return JSON.stringify(this.tree);
   }
-  return stat;
+
+  private get walkList() {
+    return klawSync(this.absolutePath);
+  }
+
+  public get tree(): ITree {
+
+    const tree: ITree = {
+      name: this.name,
+      type: FileType.Directory
+    };
+
+    const type = this.stats;
+    const children: ITree[] = this.getChildrenSync(this.absolutePath);
+
+    if (_.isEmpty(children)) {
+      tree[name] = '';
+    } else {
+      const branch: ITree[] = children.map(child => buildTreeSync(child));
+      tree[name] = branch;
+    }
+    return tree;
+  }
+
+  private get name() {
+    return path.basename(this.absolutePath);
+  }
+
+  private get childrenSync(): ITree[] {
+
+    let childrenFileNames: string[];
+    if (!this.stats || !this.stats.isDirectory()) return [];
+
+    try {
+      childrenFileNames = fs.readdirSync(this.absolutePath);
+    } catch (e) {
+      debug(chalk.red('Cannot read directory'), e.code, absolutePath);
+      childrenFileNames = [];
+    }
+
+    return childrenFileNames.map(name => path.resolve(absolutePath, name));
+  }
+
+  private get stats(): fs.Stats {
+    let stat: fs.Stats;
+    try {
+      stat = fs.statSync(this.absolutePath);
+    } catch (e) {
+      debug(chalk.red(e.message);
+
+      if (e.code === 'ELOOP')
+        debug(chalk.red('There is an infinite loop symlink in your directory ' +
+          'structure, please fix it!'));
+      if (e.code === 'ENOENT')
+        debug(chalk.red('This symlink is probably broken: '), this.absolutePath);
+    }
+    return stat;
+  }
 }

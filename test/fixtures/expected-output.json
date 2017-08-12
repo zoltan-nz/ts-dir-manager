@@ -1,0 +1,36 @@
+{
+  "tree": {
+    "name": "app",
+    "type": "directory",
+    "children": [
+      {
+        "name": "style.css",
+        "type": "file"
+      },
+      {
+        "name": "adapters",
+        "type": "directory",
+        "children": [
+          {
+            "name": "application.js",
+            "type": "file"
+          }
+        ]
+      },
+      {
+        "name": "controllers",
+        "type": "directory",
+        "children": [
+          {
+            "name": "application.js",
+            "type": "file"
+          },
+          {
+            "name": "index.js",
+            "type": "file"
+          }
+        ]
+      }
+    ]
+  }
+}

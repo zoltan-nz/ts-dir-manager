@@ -1,20 +1,31 @@
 import { expect } from 'chai';
 
-import * as path from 'path';
-
 import * as fs from 'fs';
-import { buildTreeSync, getChildrenSync, getName, getStatsSync } from '../../src/tree';
+
+import * as path from 'path';
+import { Tree, ITree, FileType } from '../../src/tree';
+
+'../../src/tree';
 
 const FIXTURE_DIRECTORY = path.resolve(__dirname, '../fixtures/fixture-directory');
 const FIXTURE_FILE = path.resolve(__dirname, '../fixtures/fixture-directory/file-1.txt');
 
 describe('Tree Sync', () => {
 
-  it('#getName - should return the file name', () => {
+  it('#get tree - return Tree object', (assert) => {
+    assert.expect(1);
+    const tree = new Tree(FIXTURE_DIRECTORY);
+
+    expect((tree.tree)).equal('');
+  });
+
+  it('#get jsonTree ')
+
+  it.skip('#getName - should return the file name', () => {
     expect(getName(FIXTURE_DIRECTORY)).equal('fixture-directory');
   });
 
-  it('#getChildrenSync - should return an array of string of children path', () => {
+  it.skip('#getChildrenSync - should return an array of string of children path', () => {
     const dir1Directory = `${FIXTURE_DIRECTORY}/dir-1`;
     const file1 = FIXTURE_FILE;
 
@@ -23,7 +34,7 @@ describe('Tree Sync', () => {
     expect(children).deep.equal([dir1Directory, file1]);
   });
 
-  it('#buildTreeSync - should return an Object', () => {
+  it.skip('#buildTreeSync - should return an Object', () => {
     const expected = {
       'fixture-directory': [
         {
@@ -69,11 +80,11 @@ describe('Tree Sync', () => {
     expect(tree).deep.equal(expected);
   });
 
-  it('#getStatsSync - should return with stat false when file can not be read', () => {
+  it.skip('#getStatsSync - should return with stat false when file can not be read', () => {
     expect(getStatsSync('not-existing.file'), 'not existing file should return false').to.be.false;
   });
 
-  it('#getStatsSync - should return fs.Stats object', () => {
+  it.skip('#getStatsSync - should return fs.Stats object', () => {
     const dir = getStatsSync(FIXTURE_DIRECTORY);
     const expected = fs.statSync(FIXTURE_DIRECTORY);
 
