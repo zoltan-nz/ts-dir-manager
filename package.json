@@ -31,7 +31,6 @@
     "@types/mocha": "^2.2.44",
     "@types/mz": "0.0.32",
     "@types/node": "^8.0.47",
-    "chai": "^4.1.2",
     "chokidar": "^1.7.0",
     "concurrently": "^3.5.0",
     "mocha": "^4.0.1",
@@ -40,6 +39,7 @@
     "typescript": "^2.7.0-dev.20171029"
   },
   "dependencies": {
+    "chai": "^4.1.2",
     "async-file": "^2.0.2",
     "chalk": "^2.3.0",
     "debug": "^3.1.0",
