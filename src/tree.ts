@@ -1,10 +1,7 @@
-import { chalk } from 'chalk';
-import { ENOENT } from 'constants';
 import * as Debug from 'debug';
 import * as klawSync from 'klaw-sync';
-import * as _ from 'lodash';
 import { fs } from 'mz';
-import * as path from 'path';
+import { join } from 'path';
 
 const debug = Debug('dir-manager');
 
@@ -13,76 +10,41 @@ export enum FileType {
   Directory = 'directory'
 }
 
-export interface ITree {
+export interface ITree extends klawSync.Item {
+  path: string;
+  stats: fs.Stats;
   name: string;
   type: FileType;
-  children?: ITree;
+  children ?: ITree;
 }
 
-export class Tree {
+class Tree implements ITree {
+
+  public path: string;
+  public stats: fs.Stats;
+  public name: string;
+  public type: FileType;
+  public childrend ?: ITree;
 
   constructor(public absolutePath: string) {
   }
 
   public get jsonTree(): string {
-    return JSON.stringify(this.tree);
+    return JSON.stringify(this.walkList);
   }
 
-  private get walkList() {
+  public get walkList(): ReadonlyArray<klawSync.Item> {
     return klawSync(this.absolutePath);
   }
 
-  public get tree(): ITree {
+  public walkSync(filePath: string): string | Array<ReadonlyArray<string>> {
 
-    const tree: ITree = {
-      name: this.name,
-      type: FileType.Directory
-    };
+    let result: string | Array<ReadonlyArray<string>>;
 
-    const type = this.stats;
-    const children: ITree[] = this.getChildrenSync(this.absolutePath);
-
-    if (_.isEmpty(children)) {
-      tree[name] = '';
-    } else {
-      const branch: ITree[] = children.map(child => buildTreeSync(child));
-      tree[name] = branch;
-    }
-    return tree;
-  }
-
-  private get name() {
-    return path.basename(this.absolutePath);
-  }
-
-  private get childrenSync(): ITree[] {
-
-    let childrenFileNames: string[];
-    if (!this.stats || !this.stats.isDirectory()) return [];
-
-    try {
-      childrenFileNames = fs.readdirSync(this.absolutePath);
-    } catch (e) {
-      debug(chalk.red('Cannot read directory'), e.code, absolutePath);
-      childrenFileNames = [];
-    }
-
-    return childrenFileNames.map(name => path.resolve(absolutePath, name));
-  }
-
-  private get stats(): fs.Stats {
-    let stat: fs.Stats;
-    try {
-      stat = fs.statSync(this.absolutePath);
-    } catch (e) {
-      debug(chalk.red(e.message);
-
-      if (e.code === 'ELOOP')
-        debug(chalk.red('There is an infinite loop symlink in your directory ' +
-          'structure, please fix it!'));
-      if (e.code === 'ENOENT')
-        debug(chalk.red('This symlink is probably broken: '), this.absolutePath);
-    }
-    return stat;
+    result = fs.statSync(filePath).isDirectory()
+      ? fs.readdirSync(filePath).map(file => this.walkSync(join(filePath, file)))
+      : filePath;
   }
 }
+
+export default Tree;

@@ -1,9 +1,9 @@
---reporter=spec
---growl
+--reporter spec
 --ui bdd
---compilers ts:ts-node/register
+--require ts-node/register
 --recursive
 --check-leaks
 --colors
 --bail
+--watch-extensions js,ts "./**/*-test.{js,ts}"
 ./**/*-test.ts
