@@ -1,9 +1,9 @@
 import * as assert from 'assert';
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 import * as Debug from 'debug';
 import * as path from 'path';
 import * as process from 'process';
-import { Tree } from './tree';
+import Tree from './tree';
 
 const debug = Debug('dir-manager');
 
@@ -25,7 +25,7 @@ debug('process.pwd', process.cwd());
 
     const tree = new Tree(resolvedDirectory);
 
-    console.log(JSON.stringify(tree.getJsonTree(), null, 2)); // tslint:disable-line no-console
+    console.log(JSON.stringify(tree.json, null, 2)); // tslint:disable-line no-console
   } catch (e) {
     console.error(chalk.red(e.message)); // tslint:disable-line no-console
   }

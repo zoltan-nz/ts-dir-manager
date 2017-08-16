@@ -5,5 +5,5 @@
 --check-leaks
 --colors
 --bail
---watch-extensions js,ts "./**/*-test.{js,ts}"
+--watch-extensions js,ts
 ./**/*-test.ts

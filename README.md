@@ -53,7 +53,7 @@ Example directory tree:
 
 ## MileStone I.
 
-* Create a one command line tool
+* Create a command line tool
 * Expect two parameters
 
     - source directory

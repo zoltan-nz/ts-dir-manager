@@ -1,7 +1,6 @@
 import * as Debug from 'debug';
-import * as klawSync from 'klaw-sync';
 import { fs } from 'mz';
-import { join } from 'path';
+import { basename, extname, join } from 'path';
 
 const debug = Debug('dir-manager');
 
@@ -10,41 +9,63 @@ export enum FileType {
   Directory = 'directory'
 }
 
-export interface ITree extends klawSync.Item {
+export interface ITree {
   path: string;
-  stats: fs.Stats;
   name: string;
+  size ?: number;
+  extension ?: string;
   type: FileType;
-  children ?: ITree;
+  children ?: ITree[];
 }
 
-class Tree implements ITree {
+export default class Tree implements ITree {
 
-  public path: string;
-  public stats: fs.Stats;
-  public name: string;
-  public type: FileType;
-  public childrend ?: ITree;
-
-  constructor(public absolutePath: string) {
+  constructor(public path: string) {
   }
 
-  public get jsonTree(): string {
-    return JSON.stringify(this.walkList);
+  public get json(): ITree {
+    return {
+      path:      this.path,
+      name:      this.name,
+      size:      this.size,
+      extension: this.extension,
+      type:      this.type,
+      children:  this.children
+    };
   }
 
-  public get walkList(): ReadonlyArray<klawSync.Item> {
-    return klawSync(this.absolutePath);
+  public get name(): string {
+    return basename(this.path);
   }
 
-  public walkSync(filePath: string): string | Array<ReadonlyArray<string>> {
-
-    let result: string | Array<ReadonlyArray<string>>;
-
-    result = fs.statSync(filePath).isDirectory()
-      ? fs.readdirSync(filePath).map(file => this.walkSync(join(filePath, file)))
-      : filePath;
+  public get size(): number {
+    return this.stat.size;
   }
+
+  public get extension(): string {
+    return extname(this.path).toLowerCase();
+  }
+
+  public get type(): FileType {
+    return this.stat.isDirectory() ? FileType.Directory : FileType.File;
+  }
+
+  public get children(): ITree[] {
+    if (this.stat.isDirectory()) {
+      const children = this.dir;
+
+      return children.map(child => new Tree(join(this.path, child)).json);
+    }
+
+    return [];
+  }
+
+  public get stat(): fs.Stats {
+    return fs.statSync(this.path);
+  }
+
+  private get dir(): string[] {
+    return fs.readdirSync(this.path);
+  }
+
 }
-
-export default Tree;
