@@ -18,7 +18,7 @@ export interface ITree {
   children ?: ITree[];
 }
 
-export default class Tree implements ITree {
+export class Tree implements ITree {
 
   constructor(public path: string) {
   }
@@ -61,7 +61,11 @@ export default class Tree implements ITree {
   }
 
   public get stat(): fs.Stats {
-    return fs.statSync(this.path);
+    try {
+      return fs.statSync(this.path);
+    } catch (e) {
+      return new fs.Stats();
+    }
   }
 
   private get dir(): string[] {
@@ -69,3 +73,5 @@ export default class Tree implements ITree {
   }
 
 }
+
+export default Tree;

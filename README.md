@@ -1,4 +1,4 @@
-# Read directory tree and save in a file
+# Read directory tree and generate a json object
 
 Example directory tree:
 
@@ -63,7 +63,7 @@ Example directory tree:
 
 ### Architecture:
 
-* dir-manager.ts (main, entry cli file)
+* dir-manager.ts (cli)
 * tree.ts (Reading folder and creating the tree json)
 
 ```
@@ -73,4 +73,13 @@ Tree object:
         type: "file" | "directory"
         children?: Array<Tree>
     }
+```
+
+# Usage
+
+```js
+import Tree from 'ts-dir-manager'
+
+const tree=new Tree('./folder');
+console.log(JSON.stringify(tree.json));
 ```

@@ -5,7 +5,12 @@
   },
   "version": "0.0.1",
   "description": "",
-  "main": "./dist/dir-manager.js",
+
+  "main": "dist/commonjs/es2017/tree.js",
+  "jsnext:main": "dist/modules/es5/tree.js",
+  "module": "dist/modules/es2017/tree.js",
+  "typings": "dist/types/tree.d.ts",
+
   "scripts": {
     "clean": "rm -rf ./dist",
     "lint": "./node_modules/.bin/tslint --project ./tsconfig.json --fix",
