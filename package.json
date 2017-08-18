@@ -8,13 +8,16 @@
 
   "main": "dist/commonjs/es2017/tree.js",
   "jsnext:main": "dist/modules/es5/tree.js",
-  "module": "dist/modules/es2017/tree.js",
+  "module": "dist/modules/es6/tree.js",
   "typings": "dist/types/tree.d.ts",
 
   "scripts": {
     "clean": "rm -rf ./dist",
     "lint": "./node_modules/.bin/tslint --project ./tsconfig.json --fix",
     "build": "tsc",
+
+    "build:production": "npm run clean && tsc --outDir ./dist/commonjs/es2017 --lib es2017 --target es2017 --module commonjs && tsc --outDir ./dist/modules/es5 --target es5 --module es6 --lib es2016 && tsc --outDir ./dist/modules/es2017 --target es2017 --module esnext  --lib ESNext  --declaration true --declarationDir ./dist/types",
+
     "watch:build": "tsc --watch",
     "test": "./node_modules/.bin/mocha",
     "watch:test": "./node_modules/.bin/chokidar ./src/**/*.ts ./test/**/*.ts --initial --silent -c mocha",
