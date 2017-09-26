@@ -1,4 +1,20 @@
-# Read directory tree and generate a json object
+# Library for reading directory tree and generating a json object
+
+## Development
+
+```
+npm start
+
+npm run lint
+npm run build
+npm run build:production
+
+npm run watch:build
+npm run watch:test
+npm run watch:lint
+```
+
+## Architecture
 
 Example directory tree:
 
