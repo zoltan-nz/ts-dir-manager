@@ -16,6 +16,7 @@
     "build:production": "npm run clean && tsc --outDir ./dist/commonjs/es2017 --lib es2017 --target es2017 --module commonjs && tsc --outDir ./dist/modules/es5 --target es5 --module es6 --lib es2016 && tsc --outDir ./dist/modules/es2017 --target es2017 --module esnext  --lib ESNext  --declaration true --declarationDir ./dist/types",
     "watch:build": "tsc --watch",
     "test": "./node_modules/.bin/mocha",
+    "jest": "jest",
     "watch:test": "./node_modules/.bin/chokidar ./src/**/*.ts ./test/**/*.ts --initial --silent -c mocha",
     "debug:test": "node --inspect-brk $(which mocha)",
     "watch:lint": "chokidar ./src/**/*.ts ./test/**/*.ts --initial --silent -c 'npm -s run lint'",
@@ -30,13 +31,16 @@
     "@types/chai": "^4.0.6",
     "@types/chalk": "^2.2.0",
     "@types/debug": "0.0.30",
+    "@types/jest": "^21.1.8",
     "@types/lodash": "^4.14.86",
     "@types/mocha": "^2.2.44",
     "@types/mz": "^0.0.32",
     "@types/node": "^8.0.53",
     "chokidar": "^1.7.0",
     "concurrently": "^3.5.1",
+    "jest": "^21.2.1",
     "mocha": "^4.0.1",
+    "ts-jest": "^21.2.4",
     "ts-node": "^3.3.0",
     "tslint": "^5.8.0",
     "typescript": "^2.6.2"
@@ -47,5 +51,18 @@
     "debug": "^3.1.0",
     "lodash": "^4.17.4",
     "mz": "^2.7.0"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json"
+    ]
   }
 }

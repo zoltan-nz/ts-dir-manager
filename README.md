@@ -91,6 +91,34 @@ Tree object:
     }
 ```
 
+## Add jest
+
+Add config to `package.json`:
+
+```
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json"
+    ]
+  }
+```
+
+```
+$ npm i -D jest @types/jest ts-jest
+$ mkdir __test__
+$ touch ./__test__/tree.test.ts
+
+$ jest
+```
+
 # Usage
 
 ```js
